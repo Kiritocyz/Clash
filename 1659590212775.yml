@@ -36,39 +36,49 @@ proxy-providers:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 7200
-  bar_download:
+  foo_asia:
     type: file
     path: ./profiles/proxies/foo.yaml
-    filter: 美|英|德
+    filter: 一元|看这里|全球|香港|日本|新加坡
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 7200
+  bar:
+    type: http
+    path: ./profiles/proxies/bar.yaml
+    url: https://sub1.liangxinjichang.com/api/v1/client/subscribe?token=98b344374c70ef808f5e72a8686840f5&flag=clash
+    interval: 7200
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 7200
   bar_asia:
     type: file
-    path: ./profiles/proxies/foo.yaml
-    filter: 一元|看这里|全球|香港
+    path: ./profiles/proxies/bar.yaml
+    filter: 香港|日本|新加坡
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
-      interval: 7200
+      interval: 7200    
 proxy-groups:
   - name: 机场
     type: select
     use:
       - foo
+      - bar
     proxies:
       - 自动选择
       - 故障转移
       - Asia-日常
       - Asia-均衡
-      - Download
   - name: 自动选择
     type: url-test
     url: http://www.gstatic.com/generate_204
     interval: 86400
     use:
       - foo
+      - bar
     proxies: []
   - name: 故障转移
     type: fallback
@@ -76,28 +86,23 @@ proxy-groups:
     interval: 7200
     use:
       - foo
+      - bar
     proxies: []
   - name: Asia-日常
     type: url-test
     url: http://www.gstatic.com/generate_204
     interval: 7200
     use:
-      - foo
-    filter: 一
+      - foo_asia
+      - bar_asia
     proxies: []
   - name: Asia-均衡
     type: load-balance
     url: http://www.gstatic.com/generate_204
     interval: 7200
     use:
+      - foo_asia
       - bar_asia
-    proxies: []
-  - name: Download
-    type: url-test
-    url: http://www.gstatic.com/generate_204
-    interval: 7200
-    use:
-      - bar_download
     proxies: []
 rule-providers:
   reject:
@@ -179,6 +184,10 @@ rule-providers:
     path: ./profiles/rules/lancidr.yaml
     interval: 86400
 rules:
+  - DOMAIN-SUFFIX,ixgg.me,DIRECT
+  - DOMAIN-SUFFIX,hfyrw.com,DIRECT
+  - DOMAIN-KEYWORD,sbdm,DIRECT
+  - PROCESS-NAME,NarakaBladepoint.exe,DIRECT
   - DOMAIN-SUFFIX,gog.com,DIRECT
   - DOMAIN-KEYWORD,m3u8,DIRECT
   - DOMAIN-SUFFIX,quelingfei.com,DIRECT
