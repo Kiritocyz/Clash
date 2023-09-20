@@ -82,7 +82,7 @@ proxy-groups:
     url: http://www.gstatic.com/generate_204
     interval: 7200
     use:
-      - bar_asia
+      - foo
     filter: 一
     proxies: []
   - name: Asia-均衡
