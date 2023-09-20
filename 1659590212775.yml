@@ -83,6 +83,7 @@ proxy-groups:
     interval: 7200
     use:
       - bar_asia
+    filter: 一
     proxies: []
   - name: Asia-均衡
     type: load-balance
