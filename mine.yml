@@ -1,0 +1,260 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+dns:
+  enable: false
+  ipv6: false
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  fallback:
+    - https://doh.dns.sb/dns-query
+    - https://dns.cloudflare.com/dns-query
+    - https://dns.twnic.tw/dns-query
+    - tls://8.8.4.4:853
+  fallback-filter:
+    geoip: true
+    ipcidr:
+      - 240.0.0.0/4
+      - 0.0.0.0/32
+proxy-providers:
+  foo:
+    type: http
+    path: ./profiles/proxies/foo.yaml
+    url: https://sub1.smallstrawberry.com/api/v1/client/subscribe?token=cn9o3l6qswk1hee5iyd78mlmzjel6853&flag=clash
+    interval: 7200
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 7200
+  bar_download:
+    type: file
+    path: ./profiles/proxies/foo.yaml
+    filter: 美|英|德
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 7200
+  bar_asia:
+    type: file
+    path: ./profiles/proxies/foo.yaml
+    filter: 一元|看这里|全球|香港
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 7200
+proxy-groups:
+  - name: 机场
+    type: select
+    use:
+      - foo
+    proxies:
+      - 自动选择
+      - 故障转移
+      - Asia-日常
+      - Asia-均衡
+      - Download
+  - name: 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 86400
+    use:
+      - foo
+    proxies: []
+  - name: 故障转移
+    type: fallback
+    url: http://www.gstatic.com/generate_204
+    interval: 7200
+    use:
+      - foo
+    proxies: []
+  - name: Asia-日常
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 7200
+    use:
+      - bar_asia
+    proxies: []
+  - name: Asia-均衡
+    type: load-balance
+    url: http://www.gstatic.com/generate_204
+    interval: 7200
+    use:
+      - bar_asia
+    proxies: []
+  - name: Download
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 7200
+    use:
+      - bar_download
+    proxies: []
+rule-providers:
+  reject:
+    type: http
+    behavior: domain
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt
+    path: ./profiles/rules/reject.yaml
+    interval: 86400
+  icloud:
+    type: http
+    behavior: domain
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt
+    path: ./profiles/rules/icloud.yaml
+    interval: 86400
+  apple:
+    type: http
+    behavior: domain
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt
+    path: ./profiles/rules/apple.yaml
+    interval: 86400
+  google:
+    type: http
+    behavior: domain
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt
+    path: ./profiles/rules/google.yaml
+    interval: 86400
+  proxy:
+    type: http
+    behavior: domain
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt
+    path: ./profiles/rules/proxy.yaml
+    interval: 86400
+  direct:
+    type: http
+    behavior: domain
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+    path: ./profiles/rules/direct.yaml
+    interval: 86400
+  private:
+    type: http
+    behavior: domain
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt
+    path: ./profiles/rules/private.yaml
+    interval: 86400
+  gfw:
+    type: http
+    behavior: domain
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt
+    path: ./profiles/rules/gfw.yaml
+    interval: 86400
+  greatfire:
+    type: http
+    behavior: domain
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/greatfire.txt
+    path: ./profiles/rules/greatfire.yaml
+    interval: 86400
+  tld-not-cn:
+    type: http
+    behavior: domain
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt
+    path: ./profiles/rules/tld-not-cn.yaml
+    interval: 86400
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
+    path: ./profiles/rules/telegramcidr.yaml
+    interval: 86400
+  cncidr:
+    type: http
+    behavior: ipcidr
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt
+    path: ./profiles/rules/cncidr.yaml
+    interval: 86400
+  lancidr:
+    type: http
+    behavior: ipcidr
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt
+    path: ./profiles/rules/lancidr.yaml
+    interval: 86400
+rules:
+  - DOMAIN-SUFFIX,gog.com,DIRECT
+  - DOMAIN-KEYWORD,m3u8,DIRECT
+  - DOMAIN-SUFFIX,quelingfei.com,DIRECT
+  - DOMAIN,vip.lz-cdn14.com,DIRECT
+  - DOMAIN-SUFFIX,bing.com,DIRECT
+  - DOMAIN-SUFFIX,bing.net,DIRECT
+  - DOMAIN-SUFFIX,epicgames.com,DIRECT
+  - DOMAIN-KEYWORD,feijisu,DIRECT
+  - DOMAIN-SUFFIX,sbdm.net,机场
+  - PROCESS-NAME,masterduel.exe,机场
+  - PROCESS-NAME,DOAX_VV.exe,机场
+  - PROCESS-NAME,steamwebhelper.exe,机场
+  - DOMAIN-KEYWORD,Origin,机场
+  - PROCESS-NAME,REDlauncher.exe,机场
+  - PROCESS-NAME,REDupdater.exe,机场
+  - PROCESS-NAME,EpicGamesLauncher.exe,DIRECT
+  - PROCESS-NAME,EpicWebHelper.exe,DIRECT
+  - PROCESS-NAME,QtWebEngineProcess.exe,DIRECT
+  - PROCESS-NAME,EADesktop.exe,DIRECT
+  - PROCESS-NAME,Typora.exe,DIRECT
+  - PROCESS-NAME,svchost.exe,DIRECT
+  - PROCESS-NAME,SystemSettings.exe,DIRECT
+  - PROCESS-NAME,steam.exe,DIRECT
+  - PROCESS-NAME,v2ray,DIRECT
+  - PROCESS-NAME,xray,DIRECT
+  - PROCESS-NAME,naive,DIRECT
+  - PROCESS-NAME,trojan,DIRECT
+  - PROCESS-NAME,trojan-go,DIRECT
+  - PROCESS-NAME,ss-local,DIRECT
+  - PROCESS-NAME,privoxy,DIRECT
+  - PROCESS-NAME,leaf,DIRECT
+  - PROCESS-NAME,v2ray.exe,DIRECT
+  - PROCESS-NAME,xray.exe,DIRECT
+  - PROCESS-NAME,naive.exe,DIRECT
+  - PROCESS-NAME,trojan.exe,DIRECT
+  - PROCESS-NAME,trojan-go.exe,DIRECT
+  - PROCESS-NAME,ss-local.exe,DIRECT
+  - PROCESS-NAME,privoxy.exe,DIRECT
+  - PROCESS-NAME,leaf.exe,DIRECT
+  - PROCESS-NAME,Surge,DIRECT
+  - PROCESS-NAME,Surge 2,DIRECT
+  - PROCESS-NAME,Surge 3,DIRECT
+  - PROCESS-NAME,Surge 4,DIRECT
+  - PROCESS-NAME,Surge%202,DIRECT
+  - PROCESS-NAME,Surge%203,DIRECT
+  - PROCESS-NAME,Surge%204,DIRECT
+  - PROCESS-NAME,Thunder,DIRECT
+  - PROCESS-NAME,DownloadService,DIRECT
+  - PROCESS-NAME,qBittorrent,DIRECT
+  - PROCESS-NAME,Transmission,DIRECT
+  - PROCESS-NAME,fdm,DIRECT
+  - PROCESS-NAME,aria2c,DIRECT
+  - PROCESS-NAME,Folx,DIRECT
+  - PROCESS-NAME,NetTransport,DIRECT
+  - PROCESS-NAME,uTorrent,DIRECT
+  - PROCESS-NAME,WebTorrent,DIRECT
+  - PROCESS-NAME,aria2c.exe,DIRECT
+  - PROCESS-NAME,BitComet.exe,DIRECT
+  - PROCESS-NAME,fdm.exe,DIRECT
+  - PROCESS-NAME,NetTransport.exe,DIRECT
+  - PROCESS-NAME,qbittorrent.exe,DIRECT
+  - PROCESS-NAME,Thunder.exe,DIRECT
+  - PROCESS-NAME,ThunderVIP.exe,DIRECT
+  - PROCESS-NAME,transmission-daemon.exe,DIRECT
+  - PROCESS-NAME,transmission-qt.exe,DIRECT
+  - PROCESS-NAME,uTorrent.exe,DIRECT
+  - PROCESS-NAME,WebTorrent.exe,DIRECT
+  - DOMAIN,clash.razord.top,DIRECT
+  - DOMAIN,yacd.haishan.me,DIRECT
+  - RULE-SET,private,DIRECT
+  - RULE-SET,reject,REJECT
+  - RULE-SET,icloud,DIRECT
+  - RULE-SET,apple,DIRECT
+  - RULE-SET,google,DIRECT
+  - RULE-SET,proxy,机场
+  - RULE-SET,direct,DIRECT
+  - RULE-SET,telegramcidr,机场
+  - GEOIP,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,机场
