@@ -65,8 +65,8 @@ proxy-groups:
   - name: 机场
     type: select
     use:
-      - foo
       - bar
+      - foo
     proxies:
       - 自动选择
       - 故障转移
@@ -77,31 +77,30 @@ proxy-groups:
     url: http://www.gstatic.com/generate_204
     interval: 86400
     use:
-      - foo
       - bar
+      - foo
     proxies: []
   - name: 故障转移
     type: fallback
     url: http://www.gstatic.com/generate_204
     interval: 7200
     use:
-      - foo
       - bar
+      - foo
     proxies: []
   - name: Asia-日常
     type: url-test
     url: http://www.gstatic.com/generate_204
     interval: 7200
     use:
-      - foo_asia
       - bar_asia
+      - foo_asia
     proxies: []
   - name: Asia-均衡
     type: load-balance
     url: http://www.gstatic.com/generate_204
     interval: 7200
     use:
-      - foo_asia
       - bar_asia
     proxies: []
 rule-providers:
@@ -182,8 +181,9 @@ rule-providers:
     behavior: ipcidr
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt
     path: ./profiles/rules/lancidr.yaml
-    interval: 86400
+    interval: 86400  
 rules:
+  - DOMAIN,yuc.wiki,DIRECT
   - DOMAIN-SUFFIX,ixgg.me,DIRECT
   - DOMAIN-SUFFIX,hfyrw.com,DIRECT
   - DOMAIN-KEYWORD,sbdm,DIRECT
@@ -261,7 +261,7 @@ rules:
   - RULE-SET,reject,REJECT
   - RULE-SET,icloud,DIRECT
   - RULE-SET,apple,DIRECT
-  - RULE-SET,google,DIRECT
+  - RULE-SET,google,机场
   - RULE-SET,proxy,机场
   - RULE-SET,direct,DIRECT
   - RULE-SET,telegramcidr,机场
