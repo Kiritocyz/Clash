@@ -91,7 +91,7 @@ const Sub = {
     },
 };
 
-// Extra部分是对rules、proxies、rule-providers规定字段实现prepend/append功能，其他规定字段也适用
+// Extra部分是对rules、proxies、rule-providers规定字段实现prepend/append功能，不适用其他规定字段
 const Extra = {
     '/^((?!meta.yaml).)*$/i': {
         preExtra: [
