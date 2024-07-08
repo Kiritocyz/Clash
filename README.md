@@ -1,9 +1,7 @@
 ```javascript
 // Define main function (script entry)
-// 作为一个小白，为了方便小白写verge-rev脚本，在此提供一个全局Script脚本模板，方便小白Ctrl+C&V
-// 使用：复制全部内容到verge-rev的全局扩展脚本中，然后跟据需要修改
-// 此脚本模板适用于verge-rev的1.7.3以上版本，适用于多设备多人切换订阅使用
-// 包含功能：针对筛选的订阅进行分组、规则等字段内容的覆盖以及对其rules、proxies、rule-providers进行prepend/append
+// 作为一个小白，为了方便小白写verge-rev脚本，在此提供一个Script脚本模板，方便小白Ctrl+C&V
+// 此脚本模板适用于verge-rev的1.7.3以上版本
 // 以下的addConfig函数、prepend函数、append函数，小白请勿修改，否则会导致脚本无法正常运行，大佬请自便
 const addConfig = (name, config, filename) => {
     if (name.test(filename)) {
@@ -29,6 +27,21 @@ const append = (config, type, content) => {
     }
 }
 
+// 国内DNS服务器
+const domesticNameservers = [
+    "https://dns.alidns.com/dns-query", // 阿里云公共DNS
+    "https://doh.pub/dns-query", // 腾讯DNSPod
+    "https://doh.360.cn/dns-query" // 360安全DNS
+];
+// 国外DNS服务器
+const foreignNameservers = [
+    "https://1.1.1.1/dns-query", // Cloudflare(主)
+    "https://1.0.0.1/dns-query", // Cloudflare(备)
+    "https://208.67.222.222/dns-query", // OpenDNS(主)
+    "https://208.67.220.220/dns-query", // OpenDNS(备)
+    "https://194.242.2.2/dns-query", // Mullvad(主)
+    "https://194.242.2.3/dns-query" // Mullvad(备)
+];
 // Sub部分是实现对dns, proxy-groups, rules等订阅配置文件中所规定字段的内容进行覆盖，其他规定字段也适用
 const Sub = {
     // 在此处填入'正则表达式': {}，用于匹配相应的配置，这个正则表达也可以直接写订阅名(就是直接在verge-rev的订阅列表中看到的名称)
@@ -39,17 +52,32 @@ const Sub = {
         // 以下是需要覆盖的dns配置，有需求的话可以自行参考官方文档修改，不需要的把这一项全部删除即可
         'dns': {
             // 这里留空会清空dns配置，以下内容为示例
-            "enabled": true,
+            "enable": true,
             "listen": "0.0.0.0:1053",
             "ipv6": true,
-            "default-nameserver": ["8.8.8.8", "223.5.5.5", "114.114.114.114"],
+            "use-system-hosts": false,
+            "cache-algorithm": "arc",
             "enhanced-mode": "fake-ip",
             "fake-ip-range": "198.18.0.1/16",
-            "fake-ip-filter": ["*.lan"],
-            "nameserver": ["8.8.8.8", "223.5.5.5", "114.114.114.114", "https://doh.pub/dns-query", "https://dns.alidns.com/dns-query"],
-            "fallback-filter": {
-                "geoip": true,
-                "ipcidr": ["240.0.0.0/4", "0.0.0.0/32"]
+            "fake-ip-filter": [
+                // 本地主机/设备
+                "+.lan",
+                "+.local",
+                // Windows网络出现小地球图标
+                "+.msftconnecttest.com",
+                "+.msftncsi.com",
+                // QQ快速登录检测失败
+                "localhost.ptlogin2.qq.com",
+                "localhost.sec.qq.com",
+                // 微信快速登录检测失败
+                "localhost.work.weixin.qq.com"
+            ],
+            "default-nameserver": ["223.5.5.5", "119.29.29.29", "1.1.1.1", "8.8.8.8"],
+            "nameserver": [...domesticNameservers, ...foreignNameservers],
+            "proxy-server-nameserver": [...domesticNameservers, ...foreignNameservers],
+            "nameserver-policy": {
+                "geosite:private,cn,geolocation-cn": domesticNameservers,
+                "geosite:google,youtube,telegram,gfw,geolocation-!cn": foreignNameservers
             }
         },
         // 以下是需要覆盖的分组配置，有需求的可以自行参考官方文档修改，不需要的把这一项全部删除即可
@@ -93,7 +121,7 @@ const Sub = {
     },
 };
 
-// Extra部分是对rules、proxies、rule-providers规定字段实现prepend/append功能，不适用其他规定字段
+// Extra部分是对rules、proxies、rule-providers规定字段实现prepend/append功能，其他规定字段也适用
 const Extra = {
     '/^((?!meta.yaml).)*$/i': {
         preExtra: [
