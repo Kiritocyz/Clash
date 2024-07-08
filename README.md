@@ -1,7 +1,9 @@
 ```javascript
 // Define main function (script entry)
-// 作为一个小白，为了方便小白写verge-rev脚本，在此提供一个Script脚本模板，方便小白Ctrl+C&V
-// 此脚本模板适用于verge-rev的1.7.3以上版本
+// 作为一个小白，为了方便小白写verge-rev脚本，在此提供一个全局Script脚本模板，方便小白Ctrl+C&V
+// 使用：复制全部内容到verge-rev的全局扩展脚本中，然后跟据需要修改
+// 此脚本模板适用于verge-rev的1.7.3以上版本，适用于多设备多人切换订阅使用
+// 包含功能：针对筛选的订阅进行分组、规则等字段内容的覆盖以及对其rules、proxies、rule-providers进行prepend/append
 // 以下的addConfig函数、prepend函数、append函数，小白请勿修改，否则会导致脚本无法正常运行，大佬请自便
 const addConfig = (name, config, filename) => {
     if (name.test(filename)) {
@@ -121,7 +123,7 @@ const Sub = {
     },
 };
 
-// Extra部分是对rules、proxies、rule-providers规定字段实现prepend/append功能，其他规定字段也适用
+// Extra部分是对rules、proxies、rule-providers规定字段实现prepend/append功能，不适用其他规定字段
 const Extra = {
     '/^((?!meta.yaml).)*$/i': {
         preExtra: [
