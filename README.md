@@ -2,14 +2,14 @@
 // Define main function (script entry)
 // 作为一个小白，为了方便小白写verge-rev脚本，在此提供一个全局Script脚本模板，方便小白Ctrl+C&V
 // 使用：复制全部内容到verge-rev的全局扩展脚本中，然后跟据需要修改
-// 此脚本模板适用于verge-rev的1.7.3以上版本，适用于多设备多人切换订阅使用
-// 包含功能：针对筛选的订阅进行分组、规则等字段内容的覆盖以及对其rules、proxies、rule-providers进行prepend/append
+// 此脚本模板适用于verge-rev的1.7.3以上版本，适用于多需求多设备多人切换订阅使用
+// 包含功能：针对使用需求筛选订阅，进行分组、规则等字段内容的覆盖以及对其rules、proxies、rule-providers进行prepend/append
 // 以下的addConfig函数、prepend函数、append函数，小白请勿修改，否则会导致脚本无法正常运行，大佬请自便
-const addConfig = (name, config, filename) => {
+const addConfig = (name, usage, config, filename) => {
     if (name.test(filename)) {
-        for (let key in Sub[name]) config[key] = Sub[name][key];
-        for (let i in Extra[name].preExtra) prepend(config, ...Extra[name].preExtra[i]);
-        for (let j in Extra[name].appExtra) append(config, ...Extra[name].appExtra[j]);
+        for (let key in Sub[usage]) config[key] = Sub[usage][key];
+        for (let i in Extra[usage].preExtra) prepend(config, ...Extra[usage].preExtra[i]);
+        for (let j in Extra[usage].appExtra) append(config, ...Extra[usage].appExtra[j]);
     }
 }
 
@@ -46,11 +46,11 @@ const foreignNameservers = [
 ];
 // Sub部分是实现对dns, proxy-groups, rules等订阅配置文件中所规定字段的内容进行覆盖，其他规定字段也适用
 const Sub = {
-    // 在此处填入'正则表达式': {}，用于匹配相应的配置，这个正则表达也可以直接写订阅名(就是直接在verge-rev的订阅列表中看到的名称)
+    // 在此处填入'使用需求': {}，用于匹配相应的配置
     // 注意：别丢引号！防止出错！多个配置之间用<英文的逗号>隔开
-    'xx机场': {},
+    '家用': {},
     // 以下配置为一个示例，可以自行参考
-    '/^((?!meta.yaml).)*$/i': {// 此处正则表达式意为：匹配所有名不为meta.yaml的文件，有需要可以自行学习
+    '公司用': {// 此处正则表达式意为：匹配所有名不为meta.yaml的文件，有需要可以自行学习
         // 以下是需要覆盖的dns配置，有需求的话可以自行参考官方文档修改，不需要的把这一项全部删除即可
         'dns': {
             // 这里留空会清空dns配置，以下内容为示例
@@ -125,7 +125,8 @@ const Sub = {
 
 // Extra部分是对rules、proxies、rule-providers规定字段实现prepend/append功能，不适用其他规定字段
 const Extra = {
-    '/^((?!meta.yaml).)*$/i': {
+    '家用': {},
+    '公司用': {
         preExtra: [
             ['rules',
                 [
@@ -193,10 +194,12 @@ const Extra = {
 
 function main(config, filename) {
     // 在上面配置完毕，就可以在此处调用addConfig函数添加节点、规则、规则集等
-    // 格式为 addConfig(正则表达式, config, filename);
-    // 只需要修改正则表达式的内容，config和filename不需要修改
-    addConfig(/^((?!meta.yaml).)*$/i, config, filename);
-    // addConfig(xx机场, config, filename);
+    // 格式为 addConfig(正则表达式, 使用需求, config, filename);
+    // 只需要修改正则表达式和使用需求的内容，config和filename不需要修改
+    // 注意正则表达式的2个斜杠不能丢，具体使用方法可以自行学习
+    addConfig(/^.*$/, '家用', config, filename); // /^.*$/表示筛选所有订阅，'家用'表示使用需求对应上文的配置，config和filename保持原样
+    
+    // 如果有多个使用需求，可以继续添加
     return config;
 }
 ```
