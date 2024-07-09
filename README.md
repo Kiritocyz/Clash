@@ -3,7 +3,7 @@
 // 作为一个小白，为了方便小白写verge-rev脚本，在此提供一个全局Script脚本模板，方便小白Ctrl+C&V
 // 使用：复制全部内容到verge-rev的全局扩展脚本中，然后跟据需要修改
 // 此脚本模板适用于verge-rev的1.7.3以上版本，适用于多需求、多设备、多人切换使用
-// 包含功能：针对使用需求筛选订阅，对筛选订阅进行分组、规则等字段内容的覆盖以及对其rules、proxies、rule-providers进行prepend/append
+// 包含功能：针对使用需求筛选订阅，进行分组、规则等字段内容的覆盖以及对其rules、proxies、rule-providers进行prepend/append
 // 以下的addConfig函数、prepend函数、append函数，小白请勿修改，否则会导致脚本无法正常运行，大佬请自便
 const addConfig = (name, usage, config, filename) => {
     if (name.test(filename)) {
@@ -88,7 +88,10 @@ const Sub = {
                 "name": "🚀 节点选择",
                 "type": "select",
                 "include-all-proxies": true,
-                "proxies": ["♻️ 自动选择", "DIRECT"]
+                "proxies": [
+                    "♻️ 自动选择",
+                    "DIRECT"
+                ]
             },
             {
                 "name": "♻️ 自动选择",
@@ -99,28 +102,207 @@ const Sub = {
                 "include-all-proxies": true,
                 "proxies": []
             },
+            {
+                "name": "🌍 国外媒体",
+                "type": "select",
+                "proxies": [
+                    "🚀 节点选择",
+                    "♻️ 自动选择",
+                    "🎯 全球直连"
+                ]
+            },
+            {
+                "name": "📲 电报信息",
+                "type": "select",
+                "proxies": [
+                    "🚀 节点选择",
+                    "🎯 全球直连"
+                ]
+            },
+            {
+                "name": "Ⓜ️ 微软服务",
+                "type": "select",
+                "proxies": [
+                    "🎯 全球直连",
+                    "🚀 节点选择"
+                ]
+            },
+            {
+                "name": "🍎 苹果服务",
+                "type": "select",
+                "proxies": [
+                    "🎯 全球直连",
+                    "🚀 节点选择"
+                ]
+            },
+            {
+                "name": "📢 谷歌FCM",
+                "type": "select",
+                "proxies": [
+                    "🚀 节点选择",
+                    "🎯 全球直连",
+                    "♻️ 自动选择"
+                ]
+            },
+            {
+                "name": "🎯 全球直连",
+                "type": "select",
+                "proxies": [
+                    "DIRECT",
+                    "🚀 节点选择",
+                    "♻️ 自动选择"
+                ]
+            },
+            {
+                "name": "🛑 全球拦截",
+                "type": "select",
+                "proxies": [
+                    "REJECT",
+                    "DIRECT"
+                ]
+            },
+            {
+                "name": "🍃 应用净化",
+                "type": "select",
+                "proxies": [
+                    "REJECT",
+                    "DIRECT"
+                ]
+            },
+            {
+                "name": "🐟 漏网之鱼",
+                "type": "select",
+                "proxies": [
+                    "🚀 节点选择",
+                    "🎯 全球直连",
+                    "♻️ 自动选择"
+                ]
+            }
         ],
         // 以下是需要覆盖的规则配置，有需求的可以自行参考官方文档修改，不需要的把这一项全部删除即可
         // 注意规则、分组、规则集的对应
-        'rules': ["RULE-SET,ProxyLite,🚀 节点选择", "GEOIP,CN,🎯 全球直连", "MATCH,🐟 漏网之鱼"],
+        'rules': [
+            "RULE-SET,PersonalDirect,🎯 全球直连",
+            "RULE-SET,PersonalProxy,🚀 节点选择",
+            "RULE-SET,LocalAreaNetwork,🎯 全球直连",
+            "RULE-SET,UnBan,🎯 全球直连",
+            "RULE-SET,GoogleCN,🎯 全球直连",
+            "RULE-SET,SteamCN,🎯 全球直连",
+            "RULE-SET,ChinaDomain,🎯 全球直连",
+            "RULE-SET,ChinaCompanyIp,🎯 全球直连",
+            "RULE-SET,BanAD,🛑 全球拦截",
+            "RULE-SET,BanProgramAD,🍃 应用净化",
+            "RULE-SET,GoogleFCM,📢 谷歌FCM",
+            "RULE-SET,Microsoft,Ⓜ️ 微软服务",
+            "RULE-SET,Apple,🍎 苹果服务",
+            "RULE-SET,Telegram,📲 电报信息",
+            "RULE-SET,ProxyMedia,🌍 国外媒体",
+            "RULE-SET,ProxyLite,🚀 节点选择",
+            "GEOIP,CN,🎯 全球直连",
+            "MATCH,🐟 漏网之鱼"
+        ],
         // 以下是需要覆盖的规则集配置，有需求的可以自行参考官方文档修改，不需要的把这一项全部删除即可
         'rule-providers': {
             "LocalAreaNetwork": {
                 "type": "http",
                 "behavior": "classical",
-                "interval": 86400,
                 "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml",
+                "interval": 86400,
                 "path": "./profiles/ACL4SSR/LocalAreaNetwork.yaml"
             },
             "UnBan": {
                 "type": "http",
                 "behavior": "classical",
-                "interval": 86400,
                 "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/UnBan.yaml",
+                "interval": 86400,
                 "path": "./profiles/ACL4SSR/UnBan.yaml"
+            },
+            "GoogleCN": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/Ruleset/GoogleCN.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/GoogleCN.yaml"
+            },
+            "SteamCN": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/Ruleset/SteamCN.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/SteamCN.yaml"
+            },
+            "ChinaDomain": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaDomain.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/ChinaDomain.yaml"
+            },
+            "ChinaCompanyIp": {
+                "type": "http",
+                "behavior": "ipcidr",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaCompanyIp.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/ChinaCompanyIp.yaml"
+            },
+            "BanAD": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanAD.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/BanAD.yaml"
+            },
+            "BanProgramAD": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/BanProgramAD.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/BanProgramAD.yaml"
+            },
+            "GoogleFCM": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/Ruleset/GoogleFCM.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/GoogleFCM.yaml"
+            },
+            "Microsoft": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/Ruleset/Microsoft.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/Microsoft.yaml"
+            },
+            "Apple": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/Apple.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/Apple.yaml"
+            },
+            "Telegram": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/Ruleset/Telegram.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/Telegram.yaml"
+            },
+            "ProxyMedia": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyMedia.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/ProxyMedia.yaml"
+            },
+            "ProxyLite": {
+                "type": "http",
+                "behavior": "classical",
+                "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyLite.yaml",
+                "interval": 86400,
+                "path": "./profiles/ACL4SSR/ProxyLite.yaml"
             }
-        },
-    },
+        }
+    }
 };
 
 // Extra部分是对rules、proxies、rule-providers规定字段实现prepend/append功能，不适用其他规定字段
@@ -131,43 +313,43 @@ const Extra = {
             ['rules',
                 [
                     // 此处填写添加的规则，直接写字符串，多个规则用英文逗号隔开，不需要可以留空
-                    "RULE-SET,ProxyLite,🚀 节点选择",
-                    "GEOIP,CN,🎯 全球直连", "MATCH,🐟 漏网之鱼",
+                    // "RULE-SET,ProxyLite,🚀 节点选择",
+                    // "GEOIP,CN,🎯 全球直连", "MATCH,🐟 漏网之鱼",
                 ]
             ],
             ['proxies',
                 [
                     // 此处填写添加的节点，注意是每个节点都是{...}格式，不是[]格式，多个节点用英文逗号隔开，不需要可以留空
-                    {
-                        "name": "真的是你呀",
-                        "type": "trojan",
-                        "server": "0.0.0.0",
-                        "port": 443,
-                        "password": "00000000000",
-                        "network": "ws",
-                        "udp": true,
-                        "sni": "0.0.0.0",
-                        "skip-cert-verify": true
-                    },
+                    // {
+                    //     "name": "真的是你呀",
+                    //     "type": "trojan",
+                    //     "server": "0.0.0.0",
+                    //     "port": 443,
+                    //     "password": "00000000000",
+                    //     "network": "ws",
+                    //     "udp": true,
+                    //     "sni": "0.0.0.0",
+                    //     "skip-cert-verify": true
+                    // },
                 ]
             ],
             ['rule-providers',
                 {
                     // 此处填写添加的规则集，注意是每个规则集格式：名字:{...}，多个规则集用英文逗号隔开，不需要可以留空
-                    "LocalAreaNetwork": {
-                        "type": "http",
-                        "behavior": "classical",
-                        "interval": 86400,
-                        "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml",
-                        "path": "./profiles/ACL4SSR/LocalAreaNetwork.yaml"
-                    },
-                    "UnBan": {
-                        "type": "http",
-                        "behavior": "classical",
-                        "interval": 86400,
-                        "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/UnBan.yaml",
-                        "path": "./profiles/ACL4SSR/UnBan.yaml"
-                    }
+                    // "LocalAreaNetwork": {
+                    //     "type": "http",
+                    //     "behavior": "classical",
+                    //     "interval": 86400,
+                    //     "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml",
+                    //     "path": "./profiles/ACL4SSR/LocalAreaNetwork.yaml"
+                    // },
+                    // "UnBan": {
+                    //     "type": "http",
+                    //     "behavior": "classical",
+                    //     "interval": 86400,
+                    //     "url": "https://raw.gitmirror.com/ACL4SSR/ACL4SSR/master/Clash/Providers/UnBan.yaml",
+                    //     "path": "./profiles/ACL4SSR/UnBan.yaml"
+                    // }
                 }
             ]
         ],
@@ -198,7 +380,7 @@ function main(config, filename) {
     // 只需要修改正则表达式和使用需求的内容，config和filename不需要修改
     // 注意正则表达式的2个斜杠不能丢，具体使用方法可以自行学习
     addConfig(/^.*$/, '家用', config, filename); // /^.*$/表示筛选所有订阅，'家用'表示使用需求对应上文的配置，config和filename保持原样
-    
+
     // 如果有多个使用需求，可以继续添加
     return config;
 }
